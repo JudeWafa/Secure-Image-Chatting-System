@@ -42,7 +42,7 @@ def encryptedImage(filename):
 if __name__ == '__main__':
 
     ##################### Encryption ####################
-    fname = "./input_image.jpeg"
+    fname = "../Images/input_image.jpeg"
     encrypt, plain = encrypt_to_disk(fname)
     size = Image.open(fname).size
     f = open("encrypt.txt")
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     ff.write(str(de))
     ff.close()
     # print(de)
-    imgToDat.restoreImg(de, "trial.png")
+    imgToDat.restoreImg(de, "../Images/trial.png")
 
     # if len(plain) == len(de):
     #     print("same length")
