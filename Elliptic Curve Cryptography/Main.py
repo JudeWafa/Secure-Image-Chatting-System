@@ -7,6 +7,31 @@ import math
 from collections import Counter
 import matplotlib.pyplot as plt
 from PIL import Image
+import cv2
+from scipy.stats import entropy
+
+def pixelate(image_path, pixel_size):
+    image = Image.open(image_path)
+    original_size = image.size
+    # Reduce the image size
+    image_small = image.resize(
+        (original_size[0] // pixel_size, original_size[1] // pixel_size),
+        resample=Image.NEAREST
+    )
+    # Scale it back to original size
+    result = image_small.resize(original_size, Image.NEAREST)
+    return result
+
+
+def upsample(image_path, scale_factor):
+    image = Image.open(image_path)
+    original_size = image.size
+    new_size = (original_size[0] * scale_factor, original_size[1] * scale_factor)
+    result = image.resize(new_size, Image.LANCZOS)  # Using LANCZOS for better quality upsampling
+    return result
+
+
+
 
 def encryptedImage(filename):
     # Read the text file and parse the coordinates and cipher values
@@ -38,11 +63,22 @@ def encryptedImage(filename):
 
 
 
-
 if __name__ == '__main__':
 
-    ##################### Encryption ####################
     fname = "../Images/input_image.jpeg"
+
+    #################### Pixel Grouping ##################
+
+
+
+    image = pixelate(fname, 10)
+    # image.show()
+    image.save('../Images/pixelatedImage.jpg')
+
+
+
+    ##################### Encryption ####################
+    
     encrypt, plain = encrypt_to_disk(fname)
     size = Image.open(fname).size
     f = open("encrypt.txt")
@@ -52,6 +88,7 @@ if __name__ == '__main__':
 
 
     ################### Entropy Analysis ###################
+
 
     cipher = [i[2] for i in encrypt]
     counts = Counter(cipher)
@@ -86,6 +123,10 @@ if __name__ == '__main__':
     ff.close()
     # print(de)
     imgToDat.restoreImg(de, "../Images/trial.png")
+
+    image = upsample('../Images/trial.png', 10)
+    # image.show()
+    image.save('../Images/finalImage.jpg')
 
     # if len(plain) == len(de):
     #     print("same length")
